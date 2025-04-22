@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="NewDantecMarket.Vues.VueCategorie"
+             Title="Catégories"
+             BackgroundColor="#1F1F1F">
+
+    <ScrollView>
+        <StackLayout Padding="15" HorizontalOptions="CenterAndExpand">
+
+            <!-- Logo -->
+            <Frame HeightRequest="140"
+                   WidthRequest="140"
+                   CornerRadius="70"
+                   IsClippedToBounds="True"
+                   Padding="0"
+                   BackgroundColor="Transparent"
+                   BorderColor="White"
+                   HorizontalOptions="Center">
+                <Image Source="logo.jpg"
+                       Aspect="AspectFill" />
+            </Frame>
+
+            <!-- Titre Principal -->
+            <Label Text="Nos Catégories"
+                   FontSize="32"
+                   FontAttributes="Bold"
+                   TextColor="White"
+                   HorizontalOptions="Center"
+                   HorizontalTextAlignment="Center"
+                   Margin="0,10"/>
+
+            <!-- Collection des Catégories -->
+            <CollectionView x:Name="CategoriesCollectionView">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame BackgroundColor="#292929"
+                               CornerRadius="12"
+                               Padding="15"
+                               Margin="0,10,0,0"
+                               HasShadow="True"
+                               HorizontalOptions="Center"
+                               WidthRequest="450">
+                            <StackLayout HorizontalOptions="CenterAndExpand">
+
+                                <!-- Titre de la Catégorie -->
+                                <Label Text="{Binding Nom}"
+                                       FontSize="24"
+                                       TextColor="White"
+                                       FontAttributes="Bold"
+                                       HorizontalOptions="Center"
+                                       HorizontalTextAlignment="Center"
+                                       Margin="0,5,0,10">
+                                    <Label.GestureRecognizers>
+                                        <!-- Ajout d'un TapGestureRecognizer sur le titre de la catégorie -->
+                                        <TapGestureRecognizer Tapped="OnCategoryTapped"/>
+                                    </Label.GestureRecognizers>
+                                </Label>
+
+                                <!-- Conteneur des sous-catégories -->
+                                <StackLayout x:Name="SubCategoryContainer" IsVisible="False">
+                                    <CollectionView ItemsSource="{Binding LesCategories}" Margin="0,5,0,0">
+                                        <CollectionView.ItemsLayout>
+                                            <GridItemsLayout Orientation="Vertical" Span="1" />
+                                        </CollectionView.ItemsLayout>
+                                        <CollectionView.ItemTemplate>
+                                            <DataTemplate>
+                                                <Frame BackgroundColor="#F5A623"
+                                                       CornerRadius="10"
+                                                       Padding="10"
+                                                       Margin="5"
+                                                       HasShadow="True"
+                                                       HorizontalOptions="Center"
+                                                       WidthRequest="300">
+                                                    <Label Text="{Binding Nom}"
+                                                           FontSize="18"
+                                                           TextColor="White"
+                                                           HorizontalOptions="Center"
+                                                           VerticalOptions="Center"
+                                                           HorizontalTextAlignment="Center"/>
+                                                </Frame>
+                                            </DataTemplate>
+                                        </CollectionView.ItemTemplate>
+                                    </CollectionView>
+                                </StackLayout>
+
+                            </StackLayout>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+        </StackLayout>
+    </ScrollView>
+</ContentPage>
