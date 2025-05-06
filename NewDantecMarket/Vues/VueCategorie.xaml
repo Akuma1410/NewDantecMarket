@@ -78,6 +78,9 @@
                                                            HorizontalOptions="Center"
                                                            VerticalOptions="Center"
                                                            HorizontalTextAlignment="Center"/>
+                                                    <Frame.GestureRecognizers>
+                                                        <TapGestureRecognizer Tapped="OnSubCategoryTapped"/>
+                                                    </Frame.GestureRecognizers>
                                                 </Frame>
                                             </DataTemplate>
                                         </CollectionView.ItemTemplate>

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="NewDantecMarket.Vues.VueProduits"
+             Title="Produits"
+             BackgroundColor="#1F1F1F">
+
+    <ScrollView>
+        <StackLayout Padding="15" HorizontalOptions="CenterAndExpand">
+
+            <!-- Titre Principal -->
+            <Label x:Name="CategoryTitle"
+                   FontSize="28"
+                   FontAttributes="Bold"
+                   TextColor="White"
+                   HorizontalOptions="Center"
+                   HorizontalTextAlignment="Center"
+                   Margin="0,20"/>
+
+            <!-- Collection des Produits -->
+            <CollectionView x:Name="ProduitsCollectionView">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame BackgroundColor="#292929"
+                               CornerRadius="12"
+                               Padding="15"
+                               Margin="0,10,0,0"
+                               HasShadow="True"
+                               HorizontalOptions="Center"
+                               WidthRequest="450">
+                            <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="*,Auto">
+
+                                <!-- Nom du produit -->
+                                <Label Text="{Binding NomProduit}"
+                                       FontSize="20"
+                                       TextColor="White"
+                                       FontAttributes="Bold"
+                                       Grid.Row="0"
+                                       Grid.Column="0"
+                                       Grid.ColumnSpan="2"
+                                       Margin="0,0,0,10"/>
+
+                                <!-- Prix -->
+                                <Label Text="{Binding Prix, StringFormat='{0:F2} €'}"
+                                       FontSize="18"
+                                       TextColor="#F5A623"
+                                       FontAttributes="Bold"
+                                       Grid.Row="1"
+                                       Grid.Column="0"
+                                       VerticalOptions="Center"/>
+
+                                <!-- Quantité disponible -->
+                                <Label Text="{Binding QuantiteDisponible, StringFormat='Quantité: {0}'}"
+                                       FontSize="16"
+                                       TextColor="LightGray"
+                                       Grid.Row="1"
+                                       Grid.Column="1"
+                                       HorizontalOptions="End"
+                                       VerticalOptions="Center"/>
+
+                                <!-- Description courte si disponible -->
+                                <Label Text="{Binding DescriptionCourte}"
+                                       FontSize="14"
+                                       TextColor="LightGray"
+                                       Grid.Row="2"
+                                       Grid.Column="0"
+                                       Grid.ColumnSpan="2"
+                                       Margin="0,10,0,0"
+                                       IsVisible="{Binding DescriptionCourte, Converter={StaticResource StringToBoolConverter}}"/>
+                            </Grid>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <!-- Message si aucun produit -->
+            <Label x:Name="NoProductsLabel"
+                   Text="Aucun produit disponible dans cette catégorie"
+                   TextColor="LightGray"
+                   FontSize="18"
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center"
+                   IsVisible="False"
+                   Margin="0,50"/>
+
+        </StackLayout>
+    </ScrollView>
+</ContentPage>
