@@ -18,7 +18,8 @@
                    Margin="0,20"/>
 
             <!-- Collection des Produits -->
-            <CollectionView x:Name="ProduitsCollectionView">
+            <CollectionView x:Name="ProduitsCollectionView"
+                           SelectionMode="Single">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <Frame BackgroundColor="#292929"

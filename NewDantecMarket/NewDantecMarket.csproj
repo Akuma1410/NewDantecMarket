@@ -67,6 +67,9 @@
 	  <MauiXaml Update="Vues\VueCategorie.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Vues\vueDetailProduit.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Vues\VueLogin.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
