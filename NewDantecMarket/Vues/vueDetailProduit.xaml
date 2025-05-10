@@ -45,6 +45,8 @@
                            TextColor="#F5A623"
                            FontAttributes="Bold"
                            VerticalOptions="Start"
+                           HorizontalOptions="End"
+                           HorizontalTextAlignment="End"
                            Margin="0,0,0,10"/>
 
                     <!-- Quantité disponible (à droite, sous le prix) -->
@@ -53,7 +55,10 @@
                            Grid.Row="1"
                            FontSize="16"
                            TextColor="LightGray"
-                           VerticalOptions="Start"/>
+                           VerticalOptions="Start"
+                           HorizontalOptions="End"
+                           HorizontalTextAlignment="End"/>
+
 
                     <!-- Séparateur -->
                     <BoxView Grid.Column="0"
