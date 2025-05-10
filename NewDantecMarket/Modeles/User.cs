@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace NewDantecMarket.Modeles
 {
-    class User
+    public class User
     {
         #region attributs
         private int id;

@@ -1,6 +1,7 @@
 using NewDantecMarket.Modeles;
 using System.Diagnostics;
 using Microsoft.Maui.Controls;
+using NewDantecMarket.Services;
 
 namespace NewDantecMarket.Vues
 {
@@ -70,13 +71,63 @@ namespace NewDantecMarket.Vues
 
         private async void OnAjouterPanierClicked(object sender, EventArgs e)
         {
-            // Ici, vous intégrerez plus tard votre API pour ajouter le produit au panier
-            // Pour l'instant, affichons un message simple
-            await DisplayAlert("Produit ajouté", $"{_produit.NomProduit} a été ajouté à votre panier.", "OK");
+            try
+            {
+                // Vérifier si l'utilisateur est connecté
+                if (!SessionManager.IsLoggedIn)
+                {
+                    await DisplayAlert("Connexion requise", "Veuillez vous connecter pour ajouter des produits au panier.", "OK");
+                    // Rediriger vers la page de connexion
+                    // await Navigation.PushAsync(new PageConnexion());
+                    return;
+                }
 
-            // NOTE: Vous pourrez remplacer ce code par l'appel à votre API
-            // Exemple:
-            // await VotreServicePanier.AjouterAuPanier(_produit.Id, 1);
+                // Vérifier que l'utilisateur a bien un ID valide
+                if (SessionManager.CurrentUser == null || SessionManager.CurrentUser.Id <= 0)
+                {
+                    Debug.WriteLine("Erreur: ID utilisateur non valide ou manquant");
+                    await DisplayAlert("Erreur", "Votre session semble invalide. Veuillez vous reconnecter.", "OK");
+                    return;
+                }
+
+                // Afficher un indicateur de chargement
+                AjouterPanierButton.Text = "Ajout en cours...";
+                AjouterPanierButton.IsEnabled = false;
+
+                // Journaliser les informations pour déboguer
+                Debug.WriteLine($"Tentative d'ajout au panier - UserId: {SessionManager.CurrentUser.Id}, ProduitId: {_produit.Id}, Prix: {_produit.Prix}");
+
+                // Créer une instance de l'API
+                var api = new dantecMarket.Services.Apis();
+
+                // Appeler la méthode pour ajouter au panier
+                bool success = await api.AjouterProduitAuPanier(
+                    SessionManager.CurrentUser.Id,
+                    _produit.Id,
+                    1, // quantité par défaut à 1
+                    _produit.Prix
+                );
+
+                if (success)
+                {
+                    await DisplayAlert("Succès", $"{_produit.NomProduit} a été ajouté à votre panier.", "OK");
+                }
+                else
+                {
+                    await DisplayAlert("Erreur", "Impossible d'ajouter le produit au panier. Veuillez réessayer plus tard.", "OK");
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Erreur lors de l'ajout au panier: {ex.Message}");
+                await DisplayAlert("Erreur", $"Une erreur s'est produite: {ex.Message}", "OK");
+            }
+            finally
+            {
+                // Restaurer l'état du bouton
+                AjouterPanierButton.Text = "Ajouter au panier";
+                AjouterPanierButton.IsEnabled = true;
+            }
         }
     }
 }
