@@ -140,11 +140,18 @@ namespace dantecMarket.Services
         {
             try
             {
-                // Création des paramètres à envoyer dans l'URL
-                var url = $"/api/mobile/commandenonvalideemobile?userId={userId}";
+                // Création de l'objet contenant l'userId
+                var postData = new
+                {
+                    userId = userId
+                };
 
-                // Envoi de la requête GET
-                var response = await _httpClient.GetAsync(url);
+                // Conversion en JSON
+                var json = JsonConvert.SerializeObject(postData);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                // Envoi de la requête POST
+                var response = await _httpClient.PostAsync("/api/mobile/commandenonvalideemobile", content);
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -168,7 +175,7 @@ namespace dantecMarket.Services
                 Console.WriteLine($"Erreur inattendue : {ex.Message}");
                 return new List<PanierItemDetail>();
             }
-        }
+        }        
         #endregion
     }
 }
