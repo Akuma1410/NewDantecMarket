@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="NewDantecMarket.Vues.VueDetailProduit"
+             Title="Détail du produit"
+             BackgroundColor="#1F1F1F">
+
+    <ScrollView>
+        <StackLayout Padding="20" Spacing="20">
+
+            <!-- Nom du produit (titre unique centré) -->
+            <Label x:Name="NomProduitLabel"
+                   FontSize="28"
+                   FontAttributes="Bold"
+                   TextColor="White"
+                   HorizontalOptions="Center"
+                   HorizontalTextAlignment="Center"
+                   Margin="0,10,0,20"/>
+
+            <!-- Conteneur principal -->
+            <Frame BackgroundColor="#292929"
+                   CornerRadius="12"
+                   Padding="20"
+                   HasShadow="True">
+
+                <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto" ColumnSpacing="20">
+
+                    <!-- Image du produit (à gauche) -->
+                    <Image x:Name="ProduitImage"
+                           Grid.Column="0"
+                           Grid.Row="0"
+                           Grid.RowSpan="2"
+                           HeightRequest="200"
+                           WidthRequest="200"
+                           Aspect="AspectFit"
+                           HorizontalOptions="Start"
+                           Margin="0,0,0,15"
+                           BackgroundColor="Transparent"/>
+
+                    <!-- Prix (à droite de l'image) -->
+                    <Label x:Name="PrixLabel"
+                           Grid.Column="1"
+                           Grid.Row="0"
+                           FontSize="24"
+                           TextColor="#F5A623"
+                           FontAttributes="Bold"
+                           VerticalOptions="Start"
+                           HorizontalOptions="End"
+                           HorizontalTextAlignment="End"
+                           Margin="0,0,0,10"/>
+
+                    <!-- Quantité disponible (à droite, sous le prix) -->
+                    <Label x:Name="QuantiteLabel"
+                           Grid.Column="1"
+                           Grid.Row="1"
+                           FontSize="16"
+                           TextColor="LightGray"
+                           VerticalOptions="Start"
+                           HorizontalOptions="End"
+                           HorizontalTextAlignment="End"/>
+
+
+                    <!-- Séparateur -->
+                    <BoxView Grid.Column="0"
+                             Grid.Row="2"
+                             Grid.ColumnSpan="2"
+                             HeightRequest="1"
+                             Color="#444444"
+                             Margin="0,15"/>
+
+                    <!-- Description titre et contenu -->
+                    <StackLayout Grid.Column="0"
+                                 Grid.Row="3"
+                                 Grid.ColumnSpan="2">
+
+                        <Label Text="Description"
+                               FontSize="20"
+                               TextColor="White"
+                               FontAttributes="Bold"
+                               Margin="0,0,0,10"/>
+
+                        <Label x:Name="DescriptionLabel"
+                               FontSize="16"
+                               TextColor="LightGray"
+                               Margin="0,0,0,20"/>
+
+                        <!-- Bouton Ajouter au panier -->
+                        <Button x:Name="AjouterPanierButton"
+                                Text="Ajouter au panier"
+                                BackgroundColor="#F5A623"
+                                TextColor="Black"
+                                FontAttributes="Bold"
+                                CornerRadius="8"
+                                HeightRequest="50"
+                                Margin="0,10,0,0"
+                                Clicked="OnAjouterPanierClicked"/>
+                    </StackLayout>
+                </Grid>
+            </Frame>
+        </StackLayout>
+    </ScrollView>
+</ContentPage>

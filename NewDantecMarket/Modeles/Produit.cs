@@ -57,11 +57,37 @@ namespace NewDantecMarket.Modeles
 
     public class ImageProduit
     {
+        private string _url = string.Empty;
+
         [JsonProperty("id")]
         public int Id { get; set; }
+
         [JsonProperty("url")]
-        public string Url { get; set; }
+        public string Url
+        {
+            get => _url;
+            set => _url = value;
+        }
+
         [JsonProperty("imageName")]
         public string ImageName { get; set; }
+
+        [JsonIgnore] // Cette propriété ne sera pas sérialisée/désérialisée
+        public string FullUrl
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(_url))
+                    return string.Empty;
+
+                if (_url.StartsWith("http://") || _url.StartsWith("https://"))
+                    return _url;
+
+                if (_url.StartsWith("/"))
+                    return $"http://213.130.144.159{_url}";
+
+                return $"http://213.130.144.159/{_url}";
+            }
+        }
     }
 }
