@@ -1,82 +1,109 @@
+using dantecMarket.Services;
 using NewDantecMarket.Modeles;
-using System.Diagnostics;
-using Microsoft.Maui.Controls;
+using NewDantecMarket.Services;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace NewDantecMarket.Vues
 {
     public partial class VueDetailProduit : ContentPage
     {
-        private readonly Produit _produit;
+        private readonly Apis _apiService;
+        private Produit _produitCourant;
+        private bool _isAddingToCart = false;
 
         public VueDetailProduit(Produit produit)
         {
             InitializeComponent();
-            _produit = produit;
+            _apiService = new Apis();
+            _produitCourant = produit;
 
-            // Charger les détails du produit
-            ChargerDetailsProduit();
+            // Afficher les détails du produit
+            AfficherDetailsProduit();
         }
 
-        private void ChargerDetailsProduit()
+        private void AfficherDetailsProduit()
         {
-            try
+            // Afficher le nom du produit dans le titre
+            Title = _produitCourant.NomProduit;
+            NomProduitLabel.Text = _produitCourant.NomProduit;
+
+            // Afficher le prix
+            PrixLabel.Text = $"{_produitCourant.Prix:F2} €";
+
+            // Afficher la quantité disponible
+            QuantiteLabel.Text = $"Quantité disponible: {_produitCourant.QuantiteDisponible}";
+
+            // Afficher la description
+            DescriptionLabel.Text = _produitCourant.Description;
+
+            // Afficher l'image si disponible
+            if (_produitCourant.LesImages != null && _produitCourant.LesImages.Count > 0)
             {
-                // Définir le titre de la page avec le nom du produit
-                Title = _produit.NomProduit;
-
-                // Afficher les informations du produit
-                NomProduitLabel.Text = _produit.NomProduit;
-                PrixLabel.Text = $"{_produit.Prix:F2} €";
-                QuantiteLabel.Text = $"Quantité disponible: {_produit.QuantiteDisponible}";
-
-                // Nettoyer la description (retirer les balises HTML)
-                string descriptionNettoyee = _produit.Description;
-                if (!string.IsNullOrEmpty(descriptionNettoyee))
-                {
-                    // Enlever les balises HTML simples
-                    descriptionNettoyee = descriptionNettoyee.Replace("<div>", "")
-                                                            .Replace("</div>", "")
-                                                            .Replace("<br>", "\n")
-                                                            .Replace("&nbsp;", " ");
-                }
-
-                DescriptionLabel.Text = descriptionNettoyee;
-
-                // Charger l'image si disponible
-                if (_produit.LesImages != null && _produit.LesImages.Count > 0)
-                {
-                    var premiereImage = _produit.LesImages.FirstOrDefault();
-                    if (premiereImage != null && !string.IsNullOrEmpty(premiereImage.FullUrl))
-                    {
-                        ProduitImage.Source = premiereImage.FullUrl;
-                        ProduitImage.IsVisible = true;
-                    }
-                    else
-                    {
-                        ProduitImage.IsVisible = false;
-                    }
-                }
-                else
-                {
-                    ProduitImage.IsVisible = false;
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"Erreur lors du chargement des détails du produit: {ex.Message}");
-                DisplayAlert("Erreur", "Impossible de charger les détails du produit.", "OK");
+                ProduitImage.Source = _produitCourant.LesImages[0].FullUrl;
             }
         }
 
         private async void OnAjouterPanierClicked(object sender, EventArgs e)
         {
-            // Ici, vous intégrerez plus tard votre API pour ajouter le produit au panier
-            // Pour l'instant, affichons un message simple
-            await DisplayAlert("Produit ajouté", $"{_produit.NomProduit} a été ajouté à votre panier.", "OK");
+            // Éviter les clics multiples
+            if (_isAddingToCart)
+                return;
 
-            // NOTE: Vous pourrez remplacer ce code par l'appel à votre API
-            // Exemple:
-            // await VotreServicePanier.AjouterAuPanier(_produit.Id, 1);
+            _isAddingToCart = true;
+
+            try
+            {
+                // Vérifier si l'utilisateur est connecté
+                if (!UserSession.IsLoggedIn)
+                {
+                    await DisplayAlert("Attention", "Vous devez être connecté pour ajouter des produits au panier", "OK");
+                    await Navigation.PushAsync(new VueLogin());
+                    return;
+                }
+
+                // Vérifier s'il y a du stock disponible
+                if (_produitCourant.QuantiteDisponible <= 0)
+                {
+                    await DisplayAlert("Stock épuisé", "Ce produit n'est plus disponible en stock", "OK");
+                    return;
+                }
+
+                // Modifier le texte du bouton pour montrer que l'action est en cours
+                AjouterPanierButton.Text = "Ajout en cours...";
+                AjouterPanierButton.IsEnabled = false;
+
+                // Ajouter le produit au panier via l'API
+                bool succes = await _apiService.AjouterProduitAuPanierAsync(
+                    UserSession.CurrentUser.Id,
+                    _produitCourant.Id,
+                    1, // Quantité par défaut
+                    _produitCourant.Prix
+                );
+
+                if (succes)
+                {
+                    await DisplayAlert("Succès", "Le produit a été ajouté à votre panier", "OK");
+                }
+                else
+                {
+                    await DisplayAlert("Erreur", "Impossible d'ajouter le produit au panier", "OK");
+                }
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Erreur", $"Une erreur est survenue: {ex.Message}", "OK");
+            }
+            finally
+            {
+                // Remettre le bouton à son état initial
+                AjouterPanierButton.Text = "Ajouter au panier";
+                AjouterPanierButton.IsEnabled = true;
+                _isAddingToCart = false;
+            }
         }
     }
 }

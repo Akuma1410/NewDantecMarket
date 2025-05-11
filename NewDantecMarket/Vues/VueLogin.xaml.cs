@@ -1,15 +1,21 @@
 using dantecMarket.Services;
-using System.Diagnostics;
+using NewDantecMarket.Services;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace NewDantecMarket.Vues
 {
     public partial class VueLogin : ContentPage
     {
-        private readonly Apis _apiService = new Apis();
+        private readonly Apis _apiService;
 
         public VueLogin()
         {
             InitializeComponent();
+            _apiService = new Apis();
         }
 
         private async void OnLoginButtonClicked(object sender, EventArgs e)
@@ -17,9 +23,9 @@ namespace NewDantecMarket.Vues
             string email = EmailEntry.Text;
             string password = PasswordEntry.Text;
 
-            if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
+            if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
             {
-                await DisplayAlert("Erreur", "Veuillez entrer votre email et mot de passe.", "OK");
+                await DisplayAlert("Erreur", "Veuillez remplir tous les champs", "OK");
                 return;
             }
 
@@ -30,22 +36,24 @@ namespace NewDantecMarket.Vues
                 LoadingIndicator.IsRunning = true;
 
                 // Appeler l'API pour vérifier les identifiants
-                bool isLoginSuccessful = await _apiService.GetFindUser(email, password);
+                var user = await _apiService.GetFindUserAsync(email, password);
 
-                if (isLoginSuccessful)
+                if (user != null)
                 {
+                    // Stocker l'utilisateur dans la session
+                    UserSession.CurrentUser = user;
+
                     // Rediriger vers la page des catégories
                     await Navigation.PushAsync(new VueCategorie());
                 }
                 else
                 {
-                    await DisplayAlert("Échec de connexion", "Email ou mot de passe incorrect.", "OK");
+                    await DisplayAlert("Erreur de connexion", "Email ou mot de passe incorrect", "OK");
                 }
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Erreur de connexion: {ex.Message}");
-                await DisplayAlert("Erreur", "Une erreur s'est produite lors de la connexion.", "OK");
+                await DisplayAlert("Erreur", $"Une erreur est survenue: {ex.Message}", "OK");
             }
             finally
             {

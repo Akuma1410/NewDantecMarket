@@ -1,21 +1,28 @@
-using NewDantecMarket.Modeles;
-using System.Diagnostics;
 using dantecMarket.Services;
+using NewDantecMarket.Modeles;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace NewDantecMarket.Vues
 {
     public partial class VueCategorie : ContentPage
     {
-        private readonly Apis _apiService = new Apis();
+        private readonly Apis _apiService;
         private List<Categorie> _categories;
 
         public VueCategorie()
         {
             InitializeComponent();
-            LoadCategories();
+            _apiService = new Apis();
+
+            // Charger les catégories au démarrage
+            ChargerCategories();
         }
 
-        private async void LoadCategories()
+        private async void ChargerCategories()
         {
             try
             {
@@ -24,22 +31,24 @@ namespace NewDantecMarket.Vues
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Erreur lors du chargement des catégories: {ex.Message}");
-                await DisplayAlert("Erreur", "Impossible de charger les catégories.", "OK");
+                await DisplayAlert("Erreur", $"Impossible de charger les catégories: {ex.Message}", "OK");
             }
         }
 
         private void OnCategoryTapped(object sender, EventArgs e)
         {
-            if (sender is Label label && label.BindingContext is Categorie category)
+            if (sender is Label label && label.BindingContext is Categorie categorie)
             {
-                var parentStackLayout = label.Parent as StackLayout;
-                var subCategoryContainer = parentStackLayout?.FindByName<StackLayout>("SubCategoryContainer");
-
-                if (subCategoryContainer != null)
+                // Trouver le conteneur de sous-catégories associé à cette catégorie
+                var stackLayout = label.Parent as StackLayout;
+                if (stackLayout != null)
                 {
-                    // Inverse la visibilité du conteneur de sous-catégories
-                    subCategoryContainer.IsVisible = !subCategoryContainer.IsVisible;
+                    var subCategoryContainer = stackLayout.FindByName<StackLayout>("SubCategoryContainer");
+                    if (subCategoryContainer != null)
+                    {
+                        // Basculer la visibilité
+                        subCategoryContainer.IsVisible = !subCategoryContainer.IsVisible;
+                    }
                 }
             }
         }
@@ -48,8 +57,8 @@ namespace NewDantecMarket.Vues
         {
             if (sender is Frame frame && frame.BindingContext is SousCategorie sousCategorie)
             {
-                // Naviguer vers la page des produits avec la sous-catégorie sélectionnée
-                await Navigation.PushAsync(new VueProduits(sousCategorie));
+                // Naviguer vers la page des produits de cette sous-catégorie
+                await Navigation.PushAsync(new VueProduits(sousCategorie.Nom, sousCategorie.LesProduits));
             }
         }
     }

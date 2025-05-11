@@ -1,56 +1,57 @@
 using NewDantecMarket.Modeles;
-using System.Diagnostics;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
 namespace NewDantecMarket.Vues
 {
     public partial class VueProduits : ContentPage
     {
-        private readonly SousCategorie _sousCategorie;
-        public VueProduits(SousCategorie sousCategorie)
+        private List<Produit> _produits;
+
+        public VueProduits(string categoryName, List<Produit> produits)
         {
             InitializeComponent();
-            _sousCategorie = sousCategorie;
-            // Définir le titre avec le nom de la sous-catégorie
-            CategoryTitle.Text = _sousCategorie.Nom;
 
-            // LIGNE MANQUANTE: Ajouter l'événement de sélection
-            ProduitsCollectionView.SelectionChanged += OnProduitSelected;
+            // Définir le titre de la page
+            CategoryTitle.Text = categoryName;
 
-            // Charger les produits
-            LoadProducts();
+            // Stocker les produits
+            _produits = produits;
+
+            // Afficher les produits ou un message si la liste est vide
+            if (produits != null && produits.Count > 0)
+            {
+                ProduitsCollectionView.ItemsSource = produits;
+                NoProductsLabel.IsVisible = false;
+            }
+            else
+            {
+                NoProductsLabel.IsVisible = true;
+            }
+
+            // Ajouter un gestionnaire d'événements pour la sélection d'un produit
+            ProduitsCollectionView.SelectionChanged += OnProduitSelectionChanged;
         }
 
-        private void LoadProducts()
+        private async void OnProduitSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            try
+            // Vérifier si un élément a été sélectionné
+            if (e.CurrentSelection != null && e.CurrentSelection.Count > 0)
             {
-                // Vérifier si la sous-catégorie a des produits
-                if (_sousCategorie.LesProduits != null && _sousCategorie.LesProduits.Count > 0)
-                {
-                    ProduitsCollectionView.ItemsSource = _sousCategorie.LesProduits;
-                    NoProductsLabel.IsVisible = false;
-                }
-                else
-                {
-                    // Afficher un message s'il n'y a pas de produits
-                    NoProductsLabel.IsVisible = true;
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"Erreur lors du chargement des produits: {ex.Message}");
-                DisplayAlert("Erreur", "Impossible de charger les produits.", "OK");
-            }
-        }
+                // Récupérer le produit sélectionné
+                var produitSelectionne = e.CurrentSelection[0] as Produit;
 
-        private async void OnProduitSelected(object sender, SelectionChangedEventArgs e)
-        {
-            // Récupérer le produit sélectionné
-            if (e.CurrentSelection.FirstOrDefault() is Produit produitSelectionne)
-            {
                 // Réinitialiser la sélection
                 ProduitsCollectionView.SelectedItem = null;
+
                 // Naviguer vers la page de détail du produit
-                await Navigation.PushAsync(new VueDetailProduit(produitSelectionne));
+                if (produitSelectionne != null)
+                {
+                    await Navigation.PushAsync(new VueDetailProduit(produitSelectionne));
+                }
             }
         }
     }
