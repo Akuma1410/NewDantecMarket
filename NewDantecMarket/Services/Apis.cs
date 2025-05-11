@@ -7,14 +7,14 @@ using Newtonsoft.Json;
 
 namespace dantecMarket.Services
 {
-    class Apis
+    public class Apis
     {
         #region attributs
         public readonly HttpClient _httpClient = new HttpClient { BaseAddress = new Uri("http://213.130.144.159") };
         #endregion
 
         #region Methodes
-        public async Task<bool> GetFindUser(string email, string password)
+        public async Task<User> GetFindUserAsync(string email, string password)
         {
             try
             {
@@ -36,26 +36,27 @@ namespace dantecMarket.Services
                 if (response.IsSuccessStatusCode)
                 {
                     var responseContent = await response.Content.ReadAsStringAsync();
-                    // Vous pouvez traiter la réponse ici si nécessaire
-                    return true;
+                    var user = JsonConvert.DeserializeObject<User>(responseContent);
+                    return user;
                 }
                 else
                 {
                     Console.WriteLine($"Erreur API : {response.StatusCode} - {response.ReasonPhrase}");
-                    return false;
+                    return null;
                 }
             }
             catch (HttpRequestException ex)
             {
                 Console.WriteLine($"Erreur réseau : {ex.Message}");
-                return false;
+                return null;
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Erreur inattendue : {ex.Message}");
-                return false;
+                return null;
             }
         }
+
         public async Task<List<Categorie>> GetAllCategoriesAsync()
         {
             try
@@ -95,6 +96,43 @@ namespace dantecMarket.Services
             {
                 Console.WriteLine($"Erreur inattendue : {ex.Message}");
                 return new List<Categorie>();
+            }
+        }
+
+        public async Task<bool> AjouterProduitAuPanierAsync(int userId, int produitId, int quantite, double prix)
+        {
+            try
+            {
+                // Création de l'objet panier
+                var panierItem = new PanierItem(userId, produitId, quantite, prix);
+
+                // Conversion en JSON
+                var json = JsonConvert.SerializeObject(panierItem);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                // Envoi de la requête
+                var response = await _httpClient.PostAsync("/api/mobile/AjoutProduitCommandemobile", content);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return true;
+                }
+                else
+                {
+                    var responseContent = await response.Content.ReadAsStringAsync();
+                    Console.WriteLine($"Erreur API : {response.StatusCode} - {responseContent}");
+                    return false;
+                }
+            }
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine($"Erreur réseau : {ex.Message}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erreur inattendue : {ex.Message}");
+                return false;
             }
         }
         #endregion

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace NewDantecMarket.Modeles
 {
-    class User
+    public class User  // Changé de "class" à "public class"
     {
         #region attributs
         private int id;
