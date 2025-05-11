@@ -21,18 +21,14 @@ namespace NewDantecMarket.Vues
             _apiService = new Apis();
             _produitCourant = produit;
 
-            // Ajouter le bouton panier dans la barre d'outils
-            ToolbarItems.Add(new ToolbarItem
-            {
-                Text = "Panier",
-                IconImageSource = "cart.png", // Si vous avez une icône de panier
-                Order = ToolbarItemOrder.Primary,
-                Priority = 0,
-                Command = new Command(async () => await Navigation.PushAsync(new VuePanier()))
-            });
-
             // Afficher les détails du produit
             AfficherDetailsProduit();
+        }
+
+        // Bouton panier dans la barre d'outils
+        private async void OnPanierClicked(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new VuePanier());
         }
 
         private void AfficherDetailsProduit()

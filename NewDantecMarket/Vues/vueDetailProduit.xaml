@@ -8,6 +8,33 @@
     <ScrollView>
         <StackLayout Padding="20" Spacing="20">
 
+            <Button
+                HorizontalOptions="End"
+                VerticalOptions="Start"
+                Padding="10"
+                BackgroundColor="#F5A623"
+                CornerRadius="20"
+                HeightRequest="50"
+                WidthRequest="50"
+                Clicked="OnPanierClicked">
+                <Button.ImageSource>
+                    <FileImageSource File="cart.png" />
+                </Button.ImageSource>
+            </Button>
+
+            <!-- Logo -->
+            <Frame HeightRequest="140"
+                   WidthRequest="140"
+                   CornerRadius="70"
+                   IsClippedToBounds="True"
+                   Padding="0"
+                   BackgroundColor="Transparent"
+                   BorderColor="White"
+                   HorizontalOptions="Center">
+                <Image Source="logo.jpg"
+           Aspect="AspectFill" />
+            </Frame>
+
             <!-- Nom du produit (titre unique centré) -->
             <Label x:Name="NomProduitLabel"
                    FontSize="28"

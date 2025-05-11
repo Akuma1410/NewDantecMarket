@@ -8,6 +8,20 @@
     <ScrollView>
         <StackLayout Padding="15" HorizontalOptions="CenterAndExpand">
 
+            <Button
+                HorizontalOptions="End"
+                VerticalOptions="Start"
+                Padding="10"
+                BackgroundColor="#F5A623"
+                CornerRadius="20"
+                HeightRequest="50"
+                WidthRequest="50"
+                Clicked="OnPanierClicked">
+                <Button.ImageSource>
+                    <FileImageSource File="cart.png" />
+                </Button.ImageSource>
+            </Button>
+
             <!-- Logo -->
             <Frame HeightRequest="140"
                    WidthRequest="140"

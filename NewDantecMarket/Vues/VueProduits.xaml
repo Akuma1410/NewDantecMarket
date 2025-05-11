@@ -15,6 +15,33 @@
     <ScrollView>
         <StackLayout Padding="15" HorizontalOptions="CenterAndExpand">
 
+            <Button
+                HorizontalOptions="End"
+                VerticalOptions="Start"
+                Padding="10"
+                BackgroundColor="#F5A623"
+                CornerRadius="20"
+                HeightRequest="50"
+                WidthRequest="50"
+                Clicked="OnPanierClicked">
+                <Button.ImageSource>
+                    <FileImageSource File="cart.png" />
+                </Button.ImageSource>
+            </Button>
+
+            <!-- Logo -->
+            <Frame HeightRequest="140"
+                   WidthRequest="140"
+                   CornerRadius="70"
+                   IsClippedToBounds="True"
+                   Padding="0"
+                   BackgroundColor="Transparent"
+                   BorderColor="White"
+                   HorizontalOptions="Center">
+                <Image Source="logo.jpg"
+           Aspect="AspectFill" />
+            </Frame>
+
             <!-- Titre Principal -->
             <Label x:Name="CategoryTitle"
                    FontSize="28"
@@ -36,35 +63,50 @@
                                HasShadow="True"
                                HorizontalOptions="Center"
                                WidthRequest="450">
-                            <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="*,Auto">
+                            <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="Auto,*">
 
-                                <!-- Nom du produit -->
+                                <!-- Image du produit (à gauche) -->
+                                <Image Source="{Binding LesImages[0].FullUrl}"
+                                       Grid.Column="0"
+                                       Grid.Row="0" 
+                                       Grid.RowSpan="2"
+                                       HeightRequest="100"
+                                       WidthRequest="100"
+                                       Aspect="AspectFit"
+                                       HorizontalOptions="Start"
+                                       Margin="0,0,15,0"
+                                       BackgroundColor="Transparent"/>
+
+                                <!-- Nom du produit (à droite de l'image) -->
                                 <Label Text="{Binding NomProduit}"
                                        FontSize="20"
                                        TextColor="White"
                                        FontAttributes="Bold"
                                        Grid.Row="0"
-                                       Grid.Column="0"
-                                       Grid.ColumnSpan="2"
+                                       Grid.Column="1"
+                                       HorizontalOptions="Start"
+                                       VerticalOptions="Center"
                                        Margin="0,0,0,10"/>
 
-                                <!-- Prix -->
-                                <Label Text="{Binding Prix, StringFormat='{0:F2} €'}"
-                                       FontSize="18"
-                                       TextColor="#F5A623"
-                                       FontAttributes="Bold"
-                                       Grid.Row="1"
-                                       Grid.Column="0"
-                                       VerticalOptions="Center"/>
+                                <!-- Prix et Quantité -->
+                                <StackLayout Grid.Row="1" 
+                                             Grid.Column="1" 
+                                             Orientation="Horizontal"
+                                             Spacing="10">
+                                    <!-- Prix -->
+                                    <Label Text="{Binding Prix, StringFormat='{0:F2} €'}"
+                                           FontSize="18"
+                                           TextColor="#F5A623"
+                                           FontAttributes="Bold"
+                                           VerticalOptions="Center"/>
 
-                                <!-- Quantité disponible -->
-                                <Label Text="{Binding QuantiteDisponible, StringFormat='Quantité: {0}'}"
-                                       FontSize="16"
-                                       TextColor="LightGray"
-                                       Grid.Row="1"
-                                       Grid.Column="1"
-                                       HorizontalOptions="End"
-                                       VerticalOptions="Center"/>
+                                    <!-- Quantité disponible -->
+                                    <Label Text="{Binding QuantiteDisponible, StringFormat='Quantité: {0}'}"
+                                           FontSize="16"
+                                           TextColor="LightGray"
+                                           HorizontalOptions="End"
+                                           VerticalOptions="Center"/>
+                                </StackLayout>
 
                                 <!-- Description courte si disponible -->
                                 <Label Text="{Binding DescriptionCourte}"

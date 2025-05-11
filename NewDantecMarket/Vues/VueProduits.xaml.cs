@@ -1,9 +1,4 @@
 using NewDantecMarket.Modeles;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NewDantecMarket.Vues
 {
@@ -14,17 +9,6 @@ namespace NewDantecMarket.Vues
         public VueProduits(string categoryName, List<Produit> produits)
         {
             InitializeComponent();
-
-
-            // Ajouter le bouton panier dans la barre d'outils
-            ToolbarItems.Add(new ToolbarItem
-            {
-                Text = "Panier",
-                IconImageSource = "cart.png", // Si vous avez une icône de panier
-                Order = ToolbarItemOrder.Primary,
-                Priority = 0,
-                Command = new Command(async () => await Navigation.PushAsync(new VuePanier()))
-            });
 
             // Définir le titre de la page
             CategoryTitle.Text = categoryName;
@@ -45,6 +29,12 @@ namespace NewDantecMarket.Vues
 
             // Ajouter un gestionnaire d'événements pour la sélection d'un produit
             ProduitsCollectionView.SelectionChanged += OnProduitSelectionChanged;
+        }
+
+        // Bouton panier dans la barre d'outils
+        private async void OnPanierClicked(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new VuePanier());
         }
 
         private async void OnProduitSelectionChanged(object sender, SelectionChangedEventArgs e)
