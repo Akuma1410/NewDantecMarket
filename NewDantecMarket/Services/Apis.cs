@@ -135,6 +135,40 @@ namespace dantecMarket.Services
                 return false;
             }
         }
+
+        public async Task<List<PanierItemDetail>> GetPanierItemsAsync(int userId)
+        {
+            try
+            {
+                // Création des paramètres à envoyer dans l'URL
+                var url = $"/api/mobile/commandenonvalideemobile?userId={userId}";
+
+                // Envoi de la requête GET
+                var response = await _httpClient.GetAsync(url);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var responseContent = await response.Content.ReadAsStringAsync();
+                    var panierItems = JsonConvert.DeserializeObject<List<PanierItemDetail>>(responseContent);
+                    return panierItems ?? new List<PanierItemDetail>();
+                }
+                else
+                {
+                    Console.WriteLine($"Erreur API : {response.StatusCode} - {response.ReasonPhrase}");
+                    return new List<PanierItemDetail>();
+                }
+            }
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine($"Erreur réseau : {ex.Message}");
+                return new List<PanierItemDetail>();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erreur inattendue : {ex.Message}");
+                return new List<PanierItemDetail>();
+            }
+        }
         #endregion
     }
 }

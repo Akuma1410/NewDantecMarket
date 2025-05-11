@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="NewDantecMarket.Vues.VuePanier"
+             Title="Mon Panier"
+             BackgroundColor="#1F1F1F">
+
+    <Grid RowDefinitions="*, Auto">
+        <!-- Le contenu principal (liste des produits) -->
+        <ScrollView Grid.Row="0">
+            <StackLayout Padding="15" HorizontalOptions="CenterAndExpand">
+
+                <!-- Titre Principal -->
+                <Label Text="Votre Panier"
+                       FontSize="28"
+                       FontAttributes="Bold"
+                       TextColor="White"
+                       HorizontalOptions="Center"
+                       HorizontalTextAlignment="Center"
+                       Margin="0,20"/>
+
+                <!-- Message si panier vide -->
+                <Label x:Name="EmptyCartLabel"
+                       Text="Votre panier est vide"
+                       TextColor="LightGray"
+                       FontSize="18"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center"
+                       IsVisible="False"
+                       Margin="0,50"/>
+
+                <!-- Collection des Produits dans le panier -->
+                <CollectionView x:Name="PanierCollectionView">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Frame BackgroundColor="#292929"
+                                   CornerRadius="12"
+                                   Padding="15"
+                                   Margin="0,10,0,0"
+                                   HasShadow="True"
+                                   HorizontalOptions="Center"
+                                   WidthRequest="450">
+                                <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="Auto,*,Auto">
+
+                                    <!-- Image du produit -->
+                                    <Image Source="{Binding FullImageUrl}"
+                                           Grid.Row="0"
+                                           Grid.Column="0"
+                                           Grid.RowSpan="2"
+                                           HeightRequest="80"
+                                           WidthRequest="80"
+                                           Aspect="AspectFill"
+                                           Margin="0,0,15,0"/>
+
+                                    <!-- Nom du produit -->
+                                    <Label Text="{Binding NomProduit}"
+                                           FontSize="18"
+                                           TextColor="White"
+                                           FontAttributes="Bold"
+                                           Grid.Row="0"
+                                           Grid.Column="1"
+                                           VerticalOptions="Start"/>
+
+                                    <!-- Prix unitaire -->
+                                    <Label Text="{Binding PrixRetenu, StringFormat='Prix: {0:F2} €'}"
+                                           FontSize="16"
+                                           TextColor="LightGray"
+                                           Grid.Row="0"
+                                           Grid.Column="2"
+                                           HorizontalOptions="End"
+                                           VerticalOptions="Start"/>
+
+                                    <!-- Quantité -->
+                                    <Label Text="{Binding Quantite, StringFormat='Quantité: {0}'}"
+                                           FontSize="16"
+                                           TextColor="LightGray"
+                                           Grid.Row="1"
+                                           Grid.Column="1"
+                                           VerticalOptions="Start"/>
+
+                                    <!-- Total pour ce produit -->
+                                    <Label Text="{Binding Total, StringFormat='Total: {0:F2} €'}"
+                                           FontSize="16"
+                                           TextColor="#F5A623"
+                                           FontAttributes="Bold"
+                                           Grid.Row="1"
+                                           Grid.Column="2"
+                                           HorizontalOptions="End"
+                                           VerticalOptions="Start"/>
+                                </Grid>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+            </StackLayout>
+        </ScrollView>
+
+        <!-- Section du total et bouton commander -->
+        <Frame Grid.Row="1"
+               BackgroundColor="#292929"
+               Padding="20"
+               HasShadow="True"
+               BorderColor="Transparent">
+            <Grid ColumnDefinitions="*,Auto">
+                <!-- Total du panier -->
+                <StackLayout Grid.Column="0" VerticalOptions="Center">
+                    <Label Text="Total du panier:"
+                           FontSize="16"
+                           TextColor="White"/>
+                    <Label x:Name="TotalPanierLabel"
+                           FontSize="24"
+                           TextColor="#F5A623"
+                           FontAttributes="Bold"/>
+                </StackLayout>
+
+                <!-- Bouton commander -->
+                <Button Grid.Column="1"
+                        x:Name="CommanderButton"
+                        Text="Valider la commande"
+                        BackgroundColor="#F5A623"
+                        TextColor="Black"
+                        FontAttributes="Bold"
+                        CornerRadius="8"
+                        HeightRequest="50"
+                        WidthRequest="180"
+                        VerticalOptions="Center"
+                        Clicked="OnCommanderClicked"/>
+            </Grid>
+        </Frame>
+    </Grid>
+</ContentPage>
